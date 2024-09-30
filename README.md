@@ -1,93 +1,176 @@
-# 똑똑한식단. 똑식이_배포
+# Ddoksik Deploy
 
+This repository contains the Kubernetes deployment configurations for the Ddoksik platform. It is structured to manage the deployment of multiple services (UI, Diet, and User) using Kubernetes manifests. The repository utilizes **Kustomize** to manage Kubernetes resources and allows for flexible, reusable configurations across different environments.
 
+## Table of Contents
 
-## Getting started
+- [Overview](#overview)
+- [Technologies Used](#technologies-used)
+- [Directory Structure](#directory-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Service Details](#service-details)
+  - [UI Service](#ui-service)
+  - [Diet Service](#diet-service)
+  - [User Service](#user-service)
+- [Ingress Configuration](#ingress-configuration)
+- [Kustomize](#kustomize)
+- [Contributing](#contributing)
+- [License](#license)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Overview
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+The Ddoksik platform consists of multiple services, each handling a different part of the application. This repository includes:
 
-## Add your files
+- **UI Service**: Frontend interface for the platform.
+- **Diet Service**: Backend service managing diet-related logic.
+- **User Service**: Backend service handling user information and profiles.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+This repository provides Kubernetes deployment, service, and ingress configurations for these services.
 
+## Technologies Used
+
+- **Kubernetes**: An open-source system for automating the deployment, scaling, and management of containerized applications.
+- **Kustomize**: A tool to customize Kubernetes resource files.
+- **Ingress**: A Kubernetes resource that manages external access to services within a cluster.
+
+## Directory Structure
+
+```bash
+ddoksik-deploy/
+├── UI/
+│   ├── deployment.yaml          # Deployment configuration for the UI service
+│   └── service.yaml             # Service configuration for the UI service
+│
+├── diet/
+│   ├── deployment.yaml          # Deployment configuration for the Diet service
+│   └── service.yaml             # Service configuration for the Diet service
+│
+├── user/
+│   ├── deployment.yaml          # Deployment configuration for the User service
+│   └── service.yaml             # Service configuration for the User service
+│
+├── ingress/
+│   └── ingress.yaml             # Ingress configuration for routing external traffic
+│
+├── kustomization.yaml            # Kustomize configuration file
+├── .gitignore                    # Git ignore file
+└── README.md                     # Project documentation
 ```
-cd existing_repo
-git remote add origin https://gitlab.bangwol08.com/bangwol08/healthcare_deploy.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.bangwol08.com/bangwol08/healthcare_deploy/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
+Files Breakdown:
+deployment.yaml: Defines the Kubernetes deployment for each service (UI, Diet, User).
+service.yaml: Exposes each service internally or externally via Kubernetes service.
+ingress.yaml: Defines the ingress rules for routing external traffic to the correct service.
+kustomization.yaml: The Kustomize configuration that manages overlays and resource customization.
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Prerequisites
+To deploy these configurations, you need:
+
+Kubernetes cluster (local or cloud-based).
+kubectl: Kubernetes command-line tool for interacting with the cluster.
+Kustomize: Integrated with kubectl, used for customizing Kubernetes resources.
+Clone the Repository
+Clone this repository to your local machine:
+
+```bash
+git clone https://github.com/seungjun-Lee0/ddoksik-deploy.git
+cd ddoksik-deploy
+```
+Kubernetes Setup
+Before deploying, ensure your Kubernetes cluster is up and running. Verify it by using the following command:
+
+```bash
+kubectl cluster-info
+```
+Applying the Configurations
+Use the kubectl command to apply the Kustomize configurations to your cluster:
+
+```bash
+kubectl apply -k .
+```
+This command will deploy the UI, Diet, and User services, create the corresponding Kubernetes services, and apply the ingress rules for external access.
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+Once the services are deployed, you can access them via the ingress rules defined in the ingress.yaml file. Ensure that you have a functional Ingress Controller (e.g., NGINX Ingress) running in your Kubernetes cluster to route external traffic to the services.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## Service Details
+### UI Service
+Path: UI/
+Files:
+deployment.yaml: Defines the deployment for the frontend UI.
+service.yaml: Exposes the UI via a Kubernetes service.
+### Diet Service
+Path: diet/
+Files:
+deployment.yaml: Defines the deployment for the diet-related backend service.
+service.yaml: Exposes the diet service via a Kubernetes service.
+### User Service
+Path: user/
+Files:
+deployment.yaml: Defines the deployment for the user-related backend service.
+service.yaml: Exposes the user service via a Kubernetes service.
+## Ingress Configuration
+The ingress.yaml file in the ingress/ directory contains the configuration for routing external traffic to the services. The configuration defines paths for each service, allowing them to be accessed via a single domain or IP with different paths for each service.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ddoksik-ingress
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - path: /ui
+        pathType: Prefix
+        backend:
+          service:
+            name: ui-service
+            port:
+              number: 80
+      - path: /diet
+        pathType: Prefix
+        backend:
+          service:
+            name: diet-service
+            port:
+              number: 80
+      - path: /user
+        pathType: Prefix
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 80
+```
+Make sure to update host: example.com to your domain or IP address. This setup will route traffic as follows:
 
+http://example.com/ui → UI Service
+http://example.com/diet → Diet Service
+http://example.com/user → User Service
+## Kustomize
+This repository uses Kustomize to manage and apply Kubernetes resource configurations. The kustomization.yaml file defines how the deployment, service, and ingress configurations are combined and applied to the cluster.
+
+To apply the Kustomize configurations:
+
+```bash
+kubectl apply -k .
+```
+To preview the combined resources before applying:
+
+```bash
+kubectl kustomize .
+```
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+We welcome contributions to improve the Ddoksik deployment configurations. To contribute:
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Fork the repository.
+Create a new feature branch (git checkout -b feature-branch).
+Commit your changes (git commit -m 'Add new feature').
+Push your branch (git push origin feature-branch).
+Open a pull request.
+Please ensure your code adheres to the project's coding standards.
 
 ## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+This project is licensed under the MIT License. See the LICENSE file for more details.
