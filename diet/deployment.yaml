@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diet-deploy
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+spec:
+  selector:
+    matchLabels:
+      app: diet
+  template:
+    metadata:
+      labels:
+        app: diet
+    spec:
+      containers:
+      - name: diet
+        image: diet-image
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+      imagePullSecrets:
+        - name: gitlab-registry

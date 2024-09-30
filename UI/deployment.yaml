@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-deploy
+spec:
+  selector:
+    matchLabels:
+      app: ui
+  template:
+    metadata:
+      labels:
+        app: ui
+    spec:
+      containers:
+      - name: ui
+        image: ui-image
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "10m"
+            memory: "128Mi"
+          requests:
+            cpu: "5m"
+            memory: "128Mi"
+      imagePullSecrets:
+        - name: gitlab-registry
